@@ -2,9 +2,6 @@
   (:require [org.httpkit.client :as http]))
 
 
-;;(def url "http://europe-west1-mediquest-sandbox.cloudfunctions.net/cvk-event-to-db-5")
-(def url "http://localhost:8080")
-
 (def options {:timeout 60000             ; ms  ;; default 200 ms
               :basic-auth ["user" "pass"]
               :query-params {:param "value" :param2 ["value1" "value2"]}
@@ -13,9 +10,11 @@
 
 (defn get-now [] (java.time.LocalDateTime/now))
 
-(defn- fire-burst
+(defn fire-burst
   [n]
-  (let [success (atom 0)
+  (let [;; url "http://localhost:8080"
+        url "http://europe-west1-mediquest-sandbox.cloudfunctions.net/cvk-event-to-db-1"
+        success (atom 0)
         errors  (atom nil)]
     (loop [idx 0]
       (when (< idx n)
@@ -70,12 +69,16 @@
   [n]
   (let [success (atom 0)
         errors  (atom nil)
-        start-time (get-now)] 
+        start-time (get-now)
+        ;; url "http://localhost:8080"
+        url "http://europe-west1-mediquest-sandbox.cloudfunctions.net/cvk-event-to-db-5"
+;;        url "http://europe-west1-mediquest-sandbox.cloudfunctions.net/cvk-event-to-db-1"
+        ]
     (loop [idx 0]
       (when (< idx n)
         (http/get url options
                   (fn [{:keys [status headers body error] :as resp}] ;; asynchronous response handling
-                    (if error
+                    (if (or  error (not= status 200))
                       (swap! errors (partial cons [idx resp]))
                       (swap! success inc))))
         (recur (inc idx))))
