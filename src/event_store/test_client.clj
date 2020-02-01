@@ -10,11 +10,13 @@
 
 (defn get-now [] (java.time.LocalDateTime/now))
 
+(def url "http://europe-west1-mediquest-sandbox.cloudfunctions.net/cvk-event-to-db-1")
+;;(def url "http://europe-west1-mediquest-sandbox.cloudfunctions.net/cvk-event-to-db-5")
+;;(def url "http://localhost:8080")
+
 (defn fire-burst
   [n]
-  (let [;; url "http://localhost:8080"
-        url "http://europe-west1-mediquest-sandbox.cloudfunctions.net/cvk-event-to-db-1"
-        success (atom 0)
+  (let [success (atom 0)
         errors  (atom nil)]
     (loop [idx 0]
       (when (< idx n)
@@ -69,11 +71,7 @@
   [n]
   (let [success (atom 0)
         errors  (atom nil)
-        start-time (get-now)
-        ;; url "http://localhost:8080"
-        url "http://europe-west1-mediquest-sandbox.cloudfunctions.net/cvk-event-to-db-5"
-;;        url "http://europe-west1-mediquest-sandbox.cloudfunctions.net/cvk-event-to-db-1"
-        ]
+        start-time (get-now)]
     (loop [idx 0]
       (when (< idx n)
         (http/get url options
